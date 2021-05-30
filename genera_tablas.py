@@ -28,7 +28,7 @@ class Establecimiento(Base):
     nroEstudiantes = Column(Integer, nullable=false)
     nroDocentes = Column(Integer, nullable=false)
     parroquia_id = Column(String, ForeignKey('parroquia.codigo'), primary_key=True)
-    parroquia = relationship("Parroquia", back_populates="establecimiento")
+    parroquia = relationship("Parroquia", back_populates="establecimientos")
     
     def __repr__(self):
         return "Establecimiento: nombre=%s - Numero de distrito=%s - Sostenimiento=%s - Tipo=%s - Modalidad=%s - Jornada=%s - Acceso=%s - Num. Estudiantes=%d - Num. Docenctes=%d"% (
@@ -46,7 +46,7 @@ class Parroquia(Base):
     __tablename__ = 'parroquia'
     codigo = Column(String, primary_key=True)
     parroquia = Column(String, nullable=False)
-    establecimiento = relationship("Establecimiento", back_populates="parroquia")
+    establecimientos = relationship("Establecimiento", back_populates="parroquia")
     canton_id = Column(String, ForeignKey('canton.codigo'), primary_key=True)
     canton = relationship("Canton", back_populates="parroquias")
 

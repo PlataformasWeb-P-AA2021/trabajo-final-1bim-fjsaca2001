@@ -22,15 +22,27 @@ session = Session()
 # leer el archivo de datos
 
 with open('data/Listado-Instituciones-Educativas.csv') as File:
+    # Separar cada columna del CSV
     read = csv.reader(File, delimiter='|')
-    parrAux = "Parroquia"
+    # Salto del encabezado del csv
+    next(read)
+    # Lista que guardara cada linea del CSV
+    listaP = []
+    #Ciclo para recorrer cada linea
     for x in read:
-         nuep = x[7]
-         if(nuep != parrAux):
-             with session.no_autoflush:
-                aux = session.query(Canton).filter_by(codigo = x[4]).first()
-                parro = Parroquia(codigo=x[6], parroquia=nuep, canton=aux)
-                session.add(parro)
-             parrAux = nuep
-            
+        #Almacenamiento de las columnas que nos sirven (Codigo de canton, codigo parroquia y parroquia)
+        auxParroquia = x[4] + "|" + x[6] + "|" + x[7]
+        # Agregar la variable anterior a la lista
+        listaP.append(auxParroquia)
+    # Eliminar duplicados de la lista
+    listaP = list(set(listaP))
+    # Ciclo para agregar cada provincia
+    for x in listaP:
+        # Variable que devuelve la provincia de cada canton
+        aux = session.query(Canton).filter_by(codigo = x.split("|")[0]).first()
+        # Creacion de cada objeto de tipo canton
+        cant = Parroquia(codigo = x.split("|")[1], parroquia = x.split("|")[2], canton = aux)
+        # Agregar a la base la parroquia
+        session.add(cant)
+# Guardar los cambios 
 session.commit()
